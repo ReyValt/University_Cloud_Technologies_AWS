@@ -12,7 +12,7 @@ resource "aws_lambda_function" "this" {
   function_name = module.labels.id
   role          = var.role_arn
   handler       = "index.handler"
-  runtime       = "nodejs18.x"
+  runtime       = "nodejs16.x"
 
   environment {
     variables = var.environment_variables

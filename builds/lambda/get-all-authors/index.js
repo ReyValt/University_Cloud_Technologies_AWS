@@ -1,23 +1,10 @@
 const AWS = require("aws-sdk");
-const dynamodb = new AWS.DynamoDB({
-  region: process.env.AWS_REGION,
-  apiVersion: "2012-08-10"
-});
-
+const dynamodb = new AWS.DynamoDB({ region: process.env.AWS_REGION });
 exports.handler = (event, context, callback) => {
-  const params = {
-    TableName: process.env.AUTHORS_TABLE
-  };
-
+  const params = { TableName: process.env.AUTHORS_TABLE };
   dynamodb.scan(params, (err, data) => {
-    if (err) {
-      console.log(err);
-      callback(err);
-    } else {
-      const authors = data.Items.map(item => {
-        return { id: item.id.S, firstName: item.firstName.S, lastName: item.lastName.S };
-      });
-      callback(null, authors);
-    }
+    if (err) return callback(err);
+    const authors = data.Items.map(item => ({ id: item.id.S, firstName: item.firstName.S, lastName: item.lastName.S }));
+    callback(null, authors);
   });
 };

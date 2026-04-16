@@ -1,13 +1,6 @@
-const AWS = require("aws-sdk");
-const dynamodb = new AWS.DynamoDB({ region: process.env.AWS_REGION, apiVersion: "2012-08-10" });
-
-exports.handler = (event, context, callback) => {
-  const params = {
-    Key: { id: { S: event.id } },
-    TableName: process.env.COURSES_TABLE
-  };
-  dynamodb.deleteItem(params, (err, data) => {
-    if (err) { callback(err); }
-    else { callback(null, data); }
-  });
+const { DynamoDBClient, DeleteItemCommand } = require("@aws-sdk/client-dynamodb");
+const client = new DynamoDBClient({ region: process.env.AWS_REGION });
+exports.handler = async (event) => {
+  await client.send(new DeleteItemCommand({ TableName: process.env.COURSES_TABLE, Key: { id: { S: event.id } } }));
+  return { message: "Deleted successfully" };
 };

@@ -151,3 +151,18 @@ module "lambda_delete_course" {
     COURSES_TABLE = module.dynamodb_courses.table_name
   }
 }
+module "api_gateway" {
+  source                            = "./modules/api_gateway"
+  rest_api_name                     = "courses-api"
+  region                            = var.region
+  get_all_authors_lambda_invoke_arn = module.lambda_get_all_authors.lambda_invoke_arn
+  get_all_courses_lambda_invoke_arn = module.lambda_get_all_courses.lambda_invoke_arn
+  get_course_lambda_invoke_arn      = module.lambda_get_course.lambda_invoke_arn
+  save_course_lambda_invoke_arn     = module.lambda_save_course.lambda_invoke_arn
+  update_course_lambda_invoke_arn   = module.lambda_update_course.lambda_invoke_arn
+  delete_course_lambda_invoke_arn   = module.lambda_delete_course.lambda_invoke_arn
+}
+
+output "api_url" {
+  value = module.api_gateway.base_url
+}

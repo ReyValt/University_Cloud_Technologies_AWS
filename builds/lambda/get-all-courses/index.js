@@ -4,7 +4,12 @@ const dynamodb = new AWS.DynamoDB({ region: process.env.AWS_REGION });
 exports.handler = (event, context, callback) => {
   const params = { TableName: process.env.COURSES_TABLE };
   dynamodb.scan(params, (err, data) => {
-    if (err) return callback(err);
+    if (err) {
+        return callback(null, {
+            statusCode: 500,
+            body: JSON.stringify(err)
+        });
+    }
     const courses = data.Items.map(item => {
       return {
         id: (item.id && item.id.S) ? item.id.S : "unknown",
@@ -15,6 +20,16 @@ exports.handler = (event, context, callback) => {
         category: (item.category && item.category.S) ? item.category.S : ""
       };
     });
-    callback(null, courses);
+    
+    // ВАЖЛИВО: формат для API Gateway
+    const response = {
+        statusCode: 200,
+        headers: {
+            "Content-Type": "application/json",
+            "Access-Control-Allow-Origin": "*" 
+        },
+        body: JSON.stringify(courses)
+    };
+    callback(null, response);
   });
 };

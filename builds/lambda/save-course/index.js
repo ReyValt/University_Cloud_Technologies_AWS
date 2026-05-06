@@ -1,23 +1,23 @@
 const AWS = require("aws-sdk");
 const dynamodb = new AWS.DynamoDB({ region: process.env.AWS_REGION });
-const replaceAll = (str, find, replace) => { return str.replace(new RegExp(find, 'g'), replace); };
-
 exports.handler = (event, context, callback) => {
-  const id = replaceAll(event.title.toLowerCase(), ' ', '-');
-  const watchHref = "http://www.pluralsight.com/courses/" + id;
+  const item = JSON.parse(event.body);
   const params = {
+    TableName: process.env.COURSES_TABLE,
     Item: {
-      "id": { S: id },
-      "title": { S: event.title },
-      "watchHref": { S: watchHref },
-      "authorId": { S: event.authorId },
-      "length": { S: event.length },
-      "category": { S: event.category }
-    },
-    TableName: process.env.COURSES_TABLE
+      id: { S: item.id },
+      title: { S: item.title },
+      watchHref: { S: item.watchHref },
+      authorId: { S: item.authorId },
+      length: { S: item.length },
+      category: { S: item.category }
+    }
   };
-  dynamodb.putItem(params, (err, data) => {
-    if (err) return callback(err);
-    callback(null, { id, title: event.title, watchHref, authorId: event.authorId, length: event.length, category: event.category });
+  dynamodb.putItem(params, (err) => {
+    callback(null, {
+      statusCode: err ? 500 : 201,
+      headers: { "Content-Type": "application/json", "Access-Control-Allow-Origin": "*" },
+      body: err ? JSON.stringify(err) : JSON.stringify(item)
+    });
   });
 };

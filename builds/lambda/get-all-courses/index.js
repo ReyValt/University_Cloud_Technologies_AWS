@@ -21,7 +21,7 @@ exports.handler = (event, context, callback) => {
       };
     });
     
-    // ВАЖЛИВО: формат для API Gateway
+   
     const response = {
         statusCode: 200,
         headers: {

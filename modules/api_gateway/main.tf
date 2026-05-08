@@ -136,3 +136,77 @@ resource "aws_api_gateway_deployment" "this" {
 output "base_url" {
   value = aws_api_gateway_deployment.this.invoke_url
 }
+
+# OPTIONS /courses
+resource "aws_api_gateway_method" "options_courses" {
+  rest_api_id   = aws_api_gateway_rest_api.this.id
+  resource_id   = aws_api_gateway_resource.courses.id
+  http_method   = "OPTIONS"
+  authorization = "NONE"
+}
+resource "aws_api_gateway_integration" "options_courses_int" {
+  rest_api_id = aws_api_gateway_rest_api.this.id
+  resource_id = aws_api_gateway_resource.courses.id
+  http_method = aws_api_gateway_method.options_courses.http_method
+  type        = "MOCK"
+  request_templates = { "application/json" = "{\"statusCode\": 200}" }
+}
+resource "aws_api_gateway_method_response" "options_courses_resp" {
+  rest_api_id = aws_api_gateway_rest_api.this.id
+  resource_id = aws_api_gateway_resource.courses.id
+  http_method = aws_api_gateway_method.options_courses.http_method
+  status_code = "200"
+  response_parameters = {
+    "method.response.header.Access-Control-Allow-Headers" = true
+    "method.response.header.Access-Control-Allow-Methods" = true
+    "method.response.header.Access-Control-Allow-Origin"  = true
+  }
+}
+resource "aws_api_gateway_integration_response" "options_courses_int_resp" {
+  rest_api_id = aws_api_gateway_rest_api.this.id
+  resource_id = aws_api_gateway_resource.courses.id
+  http_method = aws_api_gateway_method.options_courses.http_method
+  status_code = "200"
+  response_parameters = {
+    "method.response.header.Access-Control-Allow-Headers" = "'Content-Type,Authorization'"
+    "method.response.header.Access-Control-Allow-Methods" = "'GET,POST,PUT,DELETE,OPTIONS'"
+    "method.response.header.Access-Control-Allow-Origin"  = "'*'"
+  }
+}
+
+# OPTIONS /courses/{id}
+resource "aws_api_gateway_method" "options_course_id" {
+  rest_api_id   = aws_api_gateway_rest_api.this.id
+  resource_id   = aws_api_gateway_resource.course_id.id
+  http_method   = "OPTIONS"
+  authorization = "NONE"
+}
+resource "aws_api_gateway_integration" "options_course_id_int" {
+  rest_api_id = aws_api_gateway_rest_api.this.id
+  resource_id = aws_api_gateway_resource.course_id.id
+  http_method = aws_api_gateway_method.options_course_id.http_method
+  type        = "MOCK"
+  request_templates = { "application/json" = "{\"statusCode\": 200}" }
+}
+resource "aws_api_gateway_method_response" "options_course_id_resp" {
+  rest_api_id = aws_api_gateway_rest_api.this.id
+  resource_id = aws_api_gateway_resource.course_id.id
+  http_method = aws_api_gateway_method.options_course_id.http_method
+  status_code = "200"
+  response_parameters = {
+    "method.response.header.Access-Control-Allow-Headers" = true
+    "method.response.header.Access-Control-Allow-Methods" = true
+    "method.response.header.Access-Control-Allow-Origin"  = true
+  }
+}
+resource "aws_api_gateway_integration_response" "options_course_id_int_resp" {
+  rest_api_id = aws_api_gateway_rest_api.this.id
+  resource_id = aws_api_gateway_resource.course_id.id
+  http_method = aws_api_gateway_method.options_course_id.http_method
+  status_code = "200"
+  response_parameters = {
+    "method.response.header.Access-Control-Allow-Headers" = "'Content-Type,Authorization'"
+    "method.response.header.Access-Control-Allow-Methods" = "'GET,POST,PUT,DELETE,OPTIONS'"
+    "method.response.header.Access-Control-Allow-Origin"  = "'*'"
+  }
+}

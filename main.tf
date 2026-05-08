@@ -166,3 +166,12 @@ module "api_gateway" {
 output "api_url" {
   value = module.api_gateway.base_url
 }
+
+module "frontend" {
+  source      = "./modules/frontend"
+  bucket_name = "klymets-cloud-frontend-2026-uniq123" 
+}
+
+output "frontend_url" {
+  value = module.frontend.cloudfront_domain
+}
